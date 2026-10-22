@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scan2cloud"
+version = "0.1.0"
+description = "Scannen (TWAIN, z. B. Canon P-208II), benennen und automatisch in die Cloud hochladen"
+requires-python = ">=3.10"
+dependencies = [
+    "pillow>=10",
+    "requests>=2.31",
+    "keyring>=24",
+    "pytwain>=2.3; sys_platform == 'win32'",
+    "sv-ttk>=2.6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pyinstaller>=6"]
+
+[project.gui-scripts]
+scan2cloud = "scan2cloud.gui.app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+
+
+[tool.setuptools]
+packages = ["scan2cloud", "scan2cloud.gui"]

@@ -1,0 +1,32 @@
+name: Test & Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows-32bit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x86   # 32 Bit – der Canon-TWAIN-Treiber ist 32 Bit
+      - name: Abhängigkeiten installieren
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Tests
+        run: python -m pytest -q
+      - name: EXE bauen
+        run: >
+          pyinstaller --noconfirm --windowed --name Scan2Cloud
+          --collect-data sv_ttk
+          --hidden-import keyring.backends.Windows
+          scan2cloud/__main__.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Scan2Cloud-windows-32bit
+          path: dist/Scan2Cloud
